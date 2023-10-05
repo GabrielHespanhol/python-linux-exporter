@@ -1,4 +1,4 @@
-# Programa para monitorar CPU, RAM e disco em sistemas linux
+# Monitoring cpu, ram memory and disk in linux systems
 
-## Versão 0.1.0
-## Validando opções do modulo psutils
+## Version 0.1.0
+## Testing version - module psutils
