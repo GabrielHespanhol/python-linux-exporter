@@ -69,28 +69,28 @@ def update_metrics():
                 vars()[variable_name].set(value)
             time.sleep(0.1)
     except Exception as e:
-        print("Problemas para atualizar as métricas! \n\n====> %s \n" % e)
+        print("Metrics update ERROR")
         raise e
 
 def start_exporter():
     try:
         """
-        Iniciar o exporter
+        Exporter running
         """
         start_http_server(8899)
         return True
     except Exception as e:
-        print("O Servidor não pode ser iniciado!")
+        print("Exporter server start ERROR")
         raise e
 
 
 def main():
     try:
         start_exporter()
-        print('Exporter Iniciado')
+        print('Exporter is running')
         update_metrics()
     except Exception as e:
-        print('\nExporter Falhou e Foi Finalizado! \n\n======> %s\n' % e)
+        print('\n Exporter start error')
         exit(1)
 
 if __name__ == '__main__':
