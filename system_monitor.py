@@ -26,16 +26,18 @@ def update_linux_metrics():
         """
         Atualiza as métricas
         """
-        cpu_percent_idle = Gauge('cpu_percent_idle', 'CPU idle percent')
         cpu_percent_user = Gauge('cpu_percent_user', 'CPU user percent')
+        cpu_percent_nice = Gauge('cpu_percent_nice', 'CPU nice percent')
         cpu_percent_system = Gauge('cpu_percent_system', 'CPU system percent')
+        cpu_percent_idle = Gauge('cpu_percent_idle', 'CPU idle percent')
         cpu_percent_iowait = Gauge('cpu_percent_iowait', 'CPU iowait percent')
         memoria_ram_total = Gauge('ram_memory_total', 'RAM Total')
         while True:
             # Metricas de uso de CPU
-            cpu_percent_idle.set(cpu_usage()['idle'])
             cpu_percent_user.set(cpu_usage()['user'])
+            cpu_percent_nice.set(cpu_usage()['nice'])
             cpu_percent_system.set(cpu_usage()['system'])
+            cpu_percent_idle.set(cpu_usage()['idle'])
             cpu_percent_iowait.set(cpu_usage()['iowait'])
             # Metricas de uso de RAM
             memoria_ram_total.set(memory_ram()['total'])
