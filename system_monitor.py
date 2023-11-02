@@ -4,7 +4,7 @@
 Python 3 - Linux prometheus exporter
 """
 
-__version__="0.1.3"
+__version__="0.1.4"
 __author__="Gabriel Hespnhol"
 
 import psutil
@@ -26,6 +26,13 @@ def get_cpu_usage():
 def get_disk_usage():
     return dict(psutil.disk_usage(path="/")._asdict())
 
+# Get swap memory usage
+def get_swap():
+    return dict(psutil.swap_memory()._asdict())
+
+def get_network_inf():
+    return dict(psutil.net_io_counters()._asdict())
+
 # Set variable names and metrics
 def update_metrics():
     try:
@@ -35,6 +42,8 @@ def update_metrics():
         cpu_dict = get_cpu_usage()
         memory_dict = get_memory_ram()
         disk_dict = get_disk_usage()
+        swap_dict = get_swap()
+        network_dict = get_network_inf()
         # Looping set description in cpu metrics
         for key, value in cpu_dict.items():
             variable_name = "cpu_percent_" + key
@@ -50,11 +59,23 @@ def update_metrics():
             variable_name = "disk_" + key
             template = f"Disk {key}"
             vars()[variable_name] = Gauge(variable_name, template)
+        # Looping set description in swap metrics
+        for key, value in swap_dict.items():
+            variable_name = "swap_" + key
+            template = f"Swap {key}"
+            vars()[variable_name] = Gauge(variable_name, template)
+        # Looping set description in network metrics
+        for key, value i8n network_dict.items():
+            variable_name = "network_" + key
+            template = f"Network {key}"
+            vars()[variable_name] = Gauge(variable_name, template)
         while True:
             # Metricas de uso de CPU
             cpu_dict = get_cpu_usage()
             memory_dict = get_memory_ram()
             disk_dict = get_disk_usage()
+            swap_dict = get_swap()
+            network_dict = get_network_inf()
             # set metrics variable CPU
             for key, value in cpu_dict.items():
                 variable_name = "cpu_percent_" + key
@@ -67,7 +88,15 @@ def update_metrics():
             for key, value in disk_dict.items():
                 variable_name = "disk_" + key
                 vars()[variable_name].set(value)
-            time.sleep(0.1)
+            # Set metrics swap memory
+            for key, value in swap_dict.items():
+                variable_name = "swap_" + key
+                vars()[variable_name].set(value)
+            # Set metrics network
+            for key, value in network_dict.items():
+                variable_name = "network_" + key
+                vars()[variable_name].set(value)
+            time.sleep(0.2)
     except Exception as e:
         print("Metrics update ERROR")
         raise e
