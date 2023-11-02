@@ -4,3 +4,7 @@
 
 ## Testing version - module psutils
 ## Create CPU, DISK AND MEMORY METRICS
+
+| Metrics | Descrição |
+|---|---|
+| cpu_percent_user | Percentual de uso de CPU |
