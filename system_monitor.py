@@ -30,8 +30,17 @@ def get_disk_usage():
 def get_swap():
     return dict(psutil.swap_memory()._asdict())
 
+# Get network info
 def get_network_inf():
     return dict(psutil.net_io_counters()._asdict())
+
+# Get cpu cores total
+def cpu_core_count():
+    return str(os.cpu_count())
+
+# Get system uptime
+def get_system_uptime():
+    return str(time.time() - psutil.boot_time())
 
 # Set variable names and metrics
 def update_metrics():
@@ -40,10 +49,12 @@ def update_metrics():
         Metrics update
         """
         cpu_dict = get_cpu_usage()
+        cpu_count = cpu_core_count()
         memory_dict = get_memory_ram()
         disk_dict = get_disk_usage()
         swap_dict = get_swap()
         network_dict = get_network_inf()
+        system_uptime = get_system_uptime()
         # Looping set description in cpu metrics
         for key, value in cpu_dict.items():
             variable_name = "cpu_percent_" + key
@@ -65,17 +76,26 @@ def update_metrics():
             template = f"Swap {key}"
             vars()[variable_name] = Gauge(variable_name, template)
         # Looping set description in network metrics
-        for key, value i8n network_dict.items():
+        for key, value in network_dict.items():
             variable_name = "network_" + key
             template = f"Network {key}"
             vars()[variable_name] = Gauge(variable_name, template)
+        # Set cpu cores count metrics
+        if len(cpu_count) > 0:
+            variable_name = "cpu_count_cores"
+            template = "CPU Cores"
+            vars()[variable_name] = Gauge(variable_name, template)
+        # Set uptime metric
+        uptime_system = Gauge("uptime_system", "Uptime do systema")
         while True:
             # Metricas de uso de CPU
             cpu_dict = get_cpu_usage()
+            cpu_count = cpu_core_count()
             memory_dict = get_memory_ram()
             disk_dict = get_disk_usage()
             swap_dict = get_swap()
             network_dict = get_network_inf()
+            system_uptime = get_system_uptime()
             # set metrics variable CPU
             for key, value in cpu_dict.items():
                 variable_name = "cpu_percent_" + key
@@ -96,6 +116,12 @@ def update_metrics():
             for key, value in network_dict.items():
                 variable_name = "network_" + key
                 vars()[variable_name].set(value)
+            # Set CPU core count metrics
+            if len(cpu_count) > 0:
+                variable_name = "cpu_count_cores"
+                vars()[variable_name].set(cpu_count)
+            # Set uptime metric
+            uptime_system.set(get_system_uptime())
             time.sleep(0.2)
     except Exception as e:
         print("Metrics update ERROR")
