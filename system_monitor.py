@@ -127,6 +127,7 @@ def update_metrics():
         print("Metrics update ERROR")
         raise e
 
+# Funcao para iniciar o exporter
 def start_exporter():
     try:
         """
